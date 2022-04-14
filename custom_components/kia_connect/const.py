@@ -32,6 +32,13 @@ DRIVING_STYLES = [
 	DRIVING_STYLE_SPORT
 ]
 
+VEHICLE_TIRES = [ 
+	{"key": "frontLeft", "name":"Front Left"},
+	{"key": "frontRight", "name":"Front Right"},
+	{"key": "rearLeft", "name":"Rear Left"},
+	{"key": "rearRight", "name":"Rear Right"},
+]
+
 DISTANCE_UNITS = LENGTH_KILOMETERS
 
 KIA_CONNECT_API = "kia_connect_api"
