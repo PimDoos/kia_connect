@@ -1,6 +1,5 @@
 """Sensor to read vehicle data from Kia Connected Services"""
 from __future__ import annotations
-from typing import Any
 from homeassistant.config_entries import ConfigEntry
 
 
@@ -8,13 +7,13 @@ from homeassistant.const import (
     STATE_OFF,
     STATE_ON
 )
-from homeassistant.components.binary_sensor import DEVICE_CLASS_BATTERY_CHARGING, DEVICE_CLASS_LOCK, DEVICE_CLASS_PLUG, BinarySensorEntity
+from homeassistant.components.binary_sensor import DEVICE_CLASS_BATTERY_CHARGING, DEVICE_CLASS_LOCK, DEVICE_CLASS_PLUG, DEVICE_CLASS_PROBLEM, BinarySensorEntity
 from homeassistant.core import HomeAssistant
 
 from .KiaConnectEntity import KiaConnectEntity
 from .KiaConnectVehicle import KiaConnectVehicle
 
-from .const import DOMAIN, KIA_CONNECT_VEHICLE, PROPULSION_BEV, PROPULSION_PHEV, PROPULSION_ICE
+from .const import DOMAIN, KIA_CONNECT_VEHICLE, PROPULSION_BEV, PROPULSION_PHEV, PROPULSION_ICE, VEHICLE_TIRES
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the Kia vehicle sensors"""
@@ -79,6 +78,21 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             None
         )
     )
+
+    for tire in VEHICLE_TIRES:
+        VEHICLE_SENSORS.append(
+            VehicleSensor(
+                hass,
+                config_entry,
+                vehicle,
+                "tire_warning_{}".format(tire["key"]),
+                "Tire Warning {}".format(tire["name"]),
+                "tireWarnings.{}".format(tire["key"]),
+                "mdi:car-tire-alert",
+                "mdi:tire",
+                DEVICE_CLASS_PROBLEM
+            )
+        )
 
     async_add_entities(VEHICLE_SENSORS)
     
