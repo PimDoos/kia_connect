@@ -1,9 +1,9 @@
 {
   "domain": "kia_connect",
   "name": "Kia Connected Services",
-  "version": "0.0.0a1",
+  "version": "0.0.0a2",
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/kia_connect",
+  "documentation": "https://github.com/PimDoos/kia_connect",
   "requirements": [],
   "ssdp": [],
   "zeroconf": [],
