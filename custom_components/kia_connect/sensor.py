@@ -1,21 +1,22 @@
 """Sensor to read vehicle data from Kia Connected Services"""
 from __future__ import annotations
-from typing import Any
 from homeassistant.config_entries import ConfigEntry
 
 
 from homeassistant.const import (
+    DEVICE_CLASS_PRESSURE,
     PERCENTAGE,
     DEVICE_CLASS_BATTERY,
+    PRESSURE_BAR,
     TIME_MINUTES
 )
-from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorEntity
+from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, STATE_CLASS_TOTAL, STATE_CLASS_TOTAL_INCREASING, SensorEntity
 from homeassistant.core import HomeAssistant
 
 from .KiaConnectEntity import KiaConnectEntity
 from .KiaConnectVehicle import KiaConnectVehicle
 
-from .const import DISTANCE_UNITS, DOMAIN, DRIVING_STYLES, KIA_CONNECT_VEHICLE, PROPULSION_BEV, PROPULSION_PHEV, PROPULSION_ICE
+from .const import DISTANCE_UNITS, DOMAIN, DRIVING_STYLES, KIA_CONNECT_VEHICLE, PROPULSION_BEV, PROPULSION_PHEV, PROPULSION_ICE, VEHICLE_TIRES
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the Kia vehicle sensors"""
@@ -67,7 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             DISTANCE_UNITS,
             "mdi:gauge",
             None,
-            STATE_CLASS_MEASUREMENT
+            STATE_CLASS_TOTAL
         )
     )
     
@@ -98,6 +99,22 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 PERCENTAGE,
                 "mdi:steering",
                 None,
+                STATE_CLASS_MEASUREMENT
+            )
+        )
+    
+    for tire in VEHICLE_TIRES:
+        VEHICLE_SENSORS.append(
+            VehicleSensor(
+                hass,
+                config_entry,
+                vehicle,
+                "tire_pressure_{}".format(tire["key"]),
+                "Tire Pressure {}".format(tire["name"]),
+                "tirePressures.{}".format(tire["key"]),
+                PRESSURE_BAR,
+                "mdi:tire",
+                DEVICE_CLASS_PRESSURE,
                 STATE_CLASS_MEASUREMENT
             )
         )
