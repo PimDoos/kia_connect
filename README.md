@@ -1,6 +1,4 @@
-# kia_connect
-Home Assistant Custom Component: Kia Connected Services
-
+# MyKia / Kia Connected Services
 This custom component integrates MyKia into Home Assistant.
 
 Setup with HACS
@@ -32,3 +30,8 @@ Want your region added? Log in to your MyKia account and open an issue with the 
 - A json response for the `/api/vehicles/{preferred_vehicle}/connected-status` call
 
 Please anonymize these json values before submitting.
+
+
+Screenshots
+-----------
+![image](https://user-images.githubusercontent.com/17709721/163465456-6a9a3fc9-5770-4aea-a06c-fcca0107eb6f.png)
