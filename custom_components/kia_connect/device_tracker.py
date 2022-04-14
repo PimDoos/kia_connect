@@ -1,6 +1,5 @@
 """Sensor to read vehicle data from Kia Connected Services"""
 from __future__ import annotations
-from typing import Any
 from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.core import HomeAssistant
