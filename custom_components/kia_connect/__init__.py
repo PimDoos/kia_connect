@@ -50,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         vehicle_id
     )
     scan_interval = timedelta(
-        minutes=DEFAULT_SCAN_INTERVAL
+        seconds=DEFAULT_SCAN_INTERVAL
     )
 
     async def update(event_time_utc: datetime):
