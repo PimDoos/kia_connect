@@ -36,8 +36,12 @@ class KiaConnectApi:
         self.cookies = response.cookies
 
         if(response.status_code == 200):
-            self.user = self.get_user()
-            return True 
+            api_response = json.loads(response.content)
+            if api_response["isSuccess"]:
+                self.user = self.get_user()
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -48,7 +52,11 @@ class KiaConnectApi:
         self.cookies = response.cookies
 
         if(response.status_code == 200):
-            return True 
+            api_response = json.loads(response.content)
+            if api_response["isSuccess"]:
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -57,7 +65,8 @@ class KiaConnectApi:
         url = self.api_base_uri + API_PATH_USER_LOGGED_IN
         response = requests.get(url, cookies=self.cookies)
         if(response.status_code == 200):
-            return True 
+            api_response = json.loads(response.content)
+            return api_response["isSuccess"]
         else:
             return False
 
