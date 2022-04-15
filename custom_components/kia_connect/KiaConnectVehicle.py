@@ -1,5 +1,4 @@
 """Represents a Kia Connected Vehicle"""
-from datetime import timedelta
 import logging
 
 from homeassistant.config_entries import ConfigEntry
