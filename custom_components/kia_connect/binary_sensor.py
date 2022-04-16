@@ -138,6 +138,10 @@ class VehicleSensor(KiaConnectEntity, BinarySensorEntity):
             return STATE_OFF
 
     @property
+    def available(self) -> bool:
+        return self.vehicle.get_child_value(self._key) is not None
+
+    @property
     def icon(self):
         if self.is_on:
             return self._icon_on
