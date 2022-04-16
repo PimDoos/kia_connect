@@ -79,9 +79,11 @@ class KiaConnectApi:
         """Get the currently logged in user"""
         url = self.api_base_uri + API_PATH_USER
         response = requests.get(url, cookies=self.cookies)
-        api_response = json.loads(response.content)
+        
         if response.status_code == 200:
-            user = api_response["data"]
+            api_response = json.loads(response.content)
+            if api_response["isSuccess"]:
+                user = api_response["data"]
             return user
         else:
             return None
@@ -102,14 +104,15 @@ class KiaConnectApi:
         return self.user["preferredVehicle"]
 
     def get_vehicle_info(self, vehicle_id: int):
-        self.user = self.get_user()
+        if self.user is not None:
+            for vehicle in self.user["vehicles"]:
+                for id_field_name in API_FIELDS_VEHICLE_ID:
+                    if vehicle[id_field_name] == vehicle_id:
+                        return vehicle
 
-        for vehicle in self.user["vehicles"]:
-            for id_field_name in API_FIELDS_VEHICLE_ID:
-                if vehicle[id_field_name] == vehicle_id:
-                    return vehicle
-
-        return None    
+            return None    
+        else:
+            return None
 
 
     def get_vehicle_status(self, vehicle_id: int):
