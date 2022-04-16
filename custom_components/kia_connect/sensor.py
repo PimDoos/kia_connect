@@ -151,6 +151,10 @@ class VehicleSensor(KiaConnectEntity, SensorEntity):
         return self.vehicle.get_child_value(self._key)
 
     @property
+    def available(self) -> bool:
+        return self.vehicle.get_child_value(self._key) is not None
+
+    @property
     def unit_of_measurement(self):
         return self._unit
 
