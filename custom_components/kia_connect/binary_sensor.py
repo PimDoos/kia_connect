@@ -74,7 +74,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             "Handbrake",
             "handbrake",
             "mdi:car-brake-parking",
-            "mdi:car-brake-parking",
+            "mdi:car-brake-alert",
             None
         )
     )
