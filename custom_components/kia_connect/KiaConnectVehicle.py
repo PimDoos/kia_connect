@@ -28,7 +28,6 @@ class KiaConnectVehicle:
     
     def update_status(self):
         if not self.kia_api.is_logged_in():
-            _LOGGER.debug("Refreshing Kia login info")
             self.kia_api.login()
 
         self.info = self.kia_api.get_vehicle_info(
@@ -81,5 +80,3 @@ class KiaConnectVehicle:
     @property
     def propulsion(self):
         return self.info["fuel"]
-
-    
