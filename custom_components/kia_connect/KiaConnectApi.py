@@ -23,6 +23,8 @@ class KiaConnectApi:
         self.username = username
         self.password = password
         self.api_base_uri = api_base_uri
+        self.user = {}
+        self.vehicle = {}
 
     def login(self) -> bool:
         """Authenticates the API session using the credentials specified in the constructor"""
@@ -49,7 +51,6 @@ class KiaConnectApi:
         """Deauthenticates the API session"""
         url = self.api_base_uri + API_PATH_USER_LOGOUT
         response = requests.get(url)
-        self.cookies = response.cookies
 
         if(response.status_code == 200):
             api_response = json.loads(response.content)
@@ -66,7 +67,11 @@ class KiaConnectApi:
         response = requests.get(url, cookies=self.cookies)
         if(response.status_code == 200):
             api_response = json.loads(response.content)
-            return api_response["isSuccess"]
+            if api_response["isSuccess"]:
+                self.cookies.update(response.cookies)
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -97,7 +102,7 @@ class KiaConnectApi:
         return self.user["preferredVehicle"]
 
     def get_vehicle_info(self, vehicle_id: int):
-        user = self.get_user()
+        self.user = self.get_user()
 
         for vehicle in self.user["vehicles"]:
             for id_field_name in API_FIELDS_VEHICLE_ID:
