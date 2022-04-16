@@ -119,9 +119,9 @@ class KiaConnectApi:
         """Get the vehicle status"""
         url = self.api_base_uri + API_PATH_VEHICLE_STATUS.format(id=vehicle_id)
         response = requests.get(url, cookies=self.cookies)
-        api_response = json.loads(response.content)
 
         if response.status_code == 200:
+            api_response = json.loads(response.content)
             vehicle = api_response["data"]
             return vehicle
         else:
