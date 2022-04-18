@@ -84,6 +84,7 @@ class KiaConnectApi:
             api_response = json.loads(response.content)
             if api_response["isSuccess"]:
                 user = api_response["data"]
+                self.cookies.update(response.cookies)
             return user
         else:
             return None
@@ -122,7 +123,11 @@ class KiaConnectApi:
 
         if response.status_code == 200:
             api_response = json.loads(response.content)
-            vehicle = api_response["data"]
-            return vehicle
+            if api_response["isSuccess"]:
+                self.cookies.update(response.cookies)
+                vehicle = api_response["data"]
+                return vehicle
+            else:
+                return None
         else:
             return None
