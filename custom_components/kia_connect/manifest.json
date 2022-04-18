@@ -1,7 +1,7 @@
 {
   "domain": "kia_connect",
   "name": "Kia Connected Services",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1",
   "config_flow": true,
   "documentation": "https://github.com/PimDoos/kia_connect",
   "issue_tracker": "https://github.com/PimDoos/kia_connect/issues",
