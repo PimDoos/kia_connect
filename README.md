@@ -10,6 +10,11 @@ Manual Setup
 ------------
 Copy the kia_connect folder to your custom_integrations folder.
 
+After installing, you can set the integration up from the UI:
+
+![image](https://user-images.githubusercontent.com/17709721/163856070-88a2a764-ab1d-4ece-a8d2-d46161cbe9f5.png)
+
+
 Tested cars
 -----------
 | Model | Type |
