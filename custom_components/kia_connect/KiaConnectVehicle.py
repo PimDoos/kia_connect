@@ -5,7 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from .KiaConnectApi import KiaConnectApi
-from .const import DEVICE_MANUFACTURER, TOPIC_UPDATE
+from .const import DEVICE_MANUFACTURER, MAX_UPDATE_RETRY_COUNT, TOPIC_UPDATE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,17 +26,20 @@ class KiaConnectVehicle:
         self.info = {}
 
     
-    def update_status(self):
-        if not self.kia_api.is_logged_in():
+    def update_status(self, retry_count = 0):
+        if retry_count > MAX_UPDATE_RETRY_COUNT:
+            _LOGGER.warning("Updating vehicle data for vehicle {vehicle_id} failed after {retry_count} attempts. Authentication failed.".format(vehicle_id = self.vehicle_id, retry_count = retry_count))
+        elif not self.kia_api.is_logged_in():
             self.kia_api.login()
-
-        self.info = self.kia_api.get_vehicle_info(
-            self.vehicle_id
-        )
-        self.data = self.kia_api.get_vehicle_status(
-            self.vehicle_id
-        )
-        async_dispatcher_send(self.hass, self.topic_update)
+            self.update_status(retry_count + 1)
+        else:
+            self.info = self.kia_api.get_vehicle_info(
+                self.vehicle_id
+            )
+            self.data = self.kia_api.get_vehicle_status(
+                self.vehicle_id
+            )
+            async_dispatcher_send(self.hass, self.topic_update)
 
     def get_status(self):
         if self.data:
