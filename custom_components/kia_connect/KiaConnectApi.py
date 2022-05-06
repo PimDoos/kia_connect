@@ -65,13 +65,10 @@ class KiaConnectApi:
         """Checks whether the session is currently authenticated"""
         url = self.api_base_uri + API_PATH_USER_LOGGED_IN
         response = requests.get(url, cookies=self.cookies)
+        self.cookies.update(response.cookies)
         if(response.status_code == 200):
             api_response = json.loads(response.content)
-            if api_response["isSuccess"]:
-                self.cookies.update(response.cookies)
-                return True
-            else:
-                return False
+            return api_response["isSuccess"]
         else:
             return False
 
@@ -79,12 +76,12 @@ class KiaConnectApi:
         """Get the currently logged in user"""
         url = self.api_base_uri + API_PATH_USER
         response = requests.get(url, cookies=self.cookies)
+        self.cookies.update(response.cookies)
         
         if response.status_code == 200:
             api_response = json.loads(response.content)
             if api_response["isSuccess"]:
                 user = api_response["data"]
-                self.cookies.update(response.cookies)
             return user
         else:
             return None
@@ -111,7 +108,7 @@ class KiaConnectApi:
                     if vehicle[id_field_name] == vehicle_id:
                         return vehicle
 
-            return None    
+            return None
         else:
             return None
 
@@ -120,11 +117,12 @@ class KiaConnectApi:
         """Get the vehicle status"""
         url = self.api_base_uri + API_PATH_VEHICLE_STATUS.format(id=vehicle_id)
         response = requests.get(url, cookies=self.cookies)
+        self.cookies.update(response.cookies)
 
         if response.status_code == 200:
             api_response = json.loads(response.content)
             if api_response["isSuccess"]:
-                self.cookies.update(response.cookies)
+                
                 vehicle = api_response["data"]
                 return vehicle
             else:
