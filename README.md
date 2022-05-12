@@ -3,7 +3,9 @@ This custom component integrates MyKia into Home Assistant.
 
 Setup with HACS
 ---------------
-Add this repository to your custom repositories.
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
+
+This repository is available in the HACS default repository.
 
 
 Manual Setup
@@ -30,7 +32,7 @@ These regions are currently supported.
 | Netherlands (NL) | https://mijnkia.nl |
 
 Want your region added? Log in to your MyKia account and open an issue with the following information:
-- Base URL, e.g. `https://mykia.com`
+- Base URL, e.g. `https://mijnkia.nl`
 - A json response for the `/api/user` call
 - A json response for the `/api/vehicles/{preferred_vehicle}/connected-status` call
 
