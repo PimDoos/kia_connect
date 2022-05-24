@@ -1,5 +1,8 @@
-# MyKia / Kia Connected Services
-This custom component integrates MyKia into Home Assistant.
+# MijnKia / Kia Connected Services
+This custom component integrates MijnKia (Connected Car Services) into Home Assistant.
+
+This implementation is specific to the non-UVO Kia Connected Services implementation for cars built before 2021.
+Newer cars mostly use the Kia UVO implementation. See [fuatakgun/kia_uvo](https://github.com/fuatakgun/kia_uvo/) to integrate with those.
 
 Setup with HACS
 ---------------
