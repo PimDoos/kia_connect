@@ -31,8 +31,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     hass.data[DOMAIN][KIA_CONNECT_API] = KiaConnectApi(
         username = config_entry.data.get(CONF_USERNAME),
         password = config_entry.data.get(CONF_PASSWORD),
-        api_base_uri = config_entry.data.get(CONF_API_ENDPOINT),
-        hass = hass
+        api_base_uri = config_entry.data.get(CONF_API_ENDPOINT)
     )
     login_success = await hass.data[DOMAIN][KIA_CONNECT_API].login()
 
