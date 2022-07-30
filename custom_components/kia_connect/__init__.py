@@ -7,7 +7,7 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform, CONF_USERNAME, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 
 from homeassistant.helpers.event import async_track_time_interval
 
@@ -19,7 +19,6 @@ from .KiaConnectVehicle import KiaConnectVehicle
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO Reduce this to 1 before submitting to HA Core.
 PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.DEVICE_TRACKER, Platform.SENSOR]
 
 
@@ -33,30 +32,32 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         username = config_entry.data.get(CONF_USERNAME),
         password = config_entry.data.get(CONF_PASSWORD),
         api_base_uri = config_entry.data.get(CONF_API_ENDPOINT),
+        hass = hass
     )
-    login_success = await hass.async_add_executor_job(
-        hass.data[DOMAIN][KIA_CONNECT_API].login
-    )
+    login_success = await hass.data[DOMAIN][KIA_CONNECT_API].login()
+
     if not login_success:
         raise ConfigEntryAuthFailed
 
-    vehicle_id = await hass.async_add_executor_job(
-        hass.data[DOMAIN][KIA_CONNECT_API].get_preferred_vehicle_id
-    )
+    vehicle_id = await hass.data[DOMAIN][KIA_CONNECT_API].get_preferred_vehicle_id()
+    vehicle_info = await hass.data[DOMAIN][KIA_CONNECT_API].get_vehicle_info(vehicle_id)
+
+    if not vehicle_info:
+        raise ConfigEntryNotReady
+        
     hass.data[DOMAIN][KIA_CONNECT_VEHICLE] = KiaConnectVehicle(
         hass, 
         config_entry, 
         hass.data[DOMAIN][KIA_CONNECT_API], 
-        vehicle_id
+        vehicle_id,
+        vehicle_info
     )
     scan_interval = timedelta(
         seconds=DEFAULT_SCAN_INTERVAL
     )
 
     async def update(event_time_utc: datetime):
-        await hass.async_add_executor_job(
-            hass.data[DOMAIN][KIA_CONNECT_VEHICLE].update_status
-        )
+        await hass.data[DOMAIN][KIA_CONNECT_VEHICLE].update_status()
     
     await update(dt_util.utcnow())
     hass.data[DOMAIN][DATA_VEHICLE_LISTENER] = async_track_time_interval(hass, update, scan_interval)
@@ -78,5 +79,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await hass.async_add_executor_job(
             hass.data[DOMAIN][KIA_CONNECT_API].logout
         )
+        hass.data[DOMAIN][KIA_CONNECT_API] = None
 
     return unload_ok

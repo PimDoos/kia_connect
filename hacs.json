@@ -1,5 +1,4 @@
 {
   "name": "Kia Connected Services",
-  "domains": [ "sensor", "binary_sensor", "device_tracker" ],
   "country": "NL"
 }

@@ -4,6 +4,7 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
+from homeassistant.exceptions import HomeAssistantError
 from .KiaConnectApi import KiaConnectApi
 from .const import DEVICE_MANUFACTURER, MAX_UPDATE_RETRY_COUNT, TOPIC_UPDATE
 
@@ -15,38 +16,37 @@ class KiaConnectVehicle:
         hass: HomeAssistant,
         config_entry: ConfigEntry,
         kia_api: KiaConnectApi,
-        vehicle_id: int
+        vehicle_id: int,
+        vehicle_info: dict
     ):
         self.hass = hass
         self.config_entry: ConfigEntry = config_entry
         self.kia_api: KiaConnectApi = kia_api
-        self.data = {}
+          
         self.vehicle_id = vehicle_id
         self.topic_update = TOPIC_UPDATE.format(self.vehicle_id)
-        self.info = {}
 
-    
-    def update_status(self, retry_count = 0):
+        self.info = vehicle_info
+        self._model = vehicle_info["model"]
+        self._vin = vehicle_info["vin"]
+        self._license_plate = vehicle_info["licensePlate"]
+        self._propulsion = vehicle_info["fuel"]
+
+        self.data = {}
+
+    async def update_status(self, retry_count = 0):
+        logged_in = await self.kia_api.is_logged_in()
         if retry_count > MAX_UPDATE_RETRY_COUNT:
             _LOGGER.warning("Updating vehicle data for vehicle {vehicle_id} failed after {retry_count} attempts. Authentication failed.".format(vehicle_id = self.vehicle_id, retry_count = retry_count))
-        elif not self.kia_api.is_logged_in():
-            self.kia_api.login()
-            self.update_status(retry_count + 1)
-        else:
-            self.info = self.kia_api.get_vehicle_info(
-                self.vehicle_id
-            )
-            self.data = self.kia_api.get_vehicle_status(
-                self.vehicle_id
-            )
+        elif not logged_in:
+            logged_in = await self.kia_api.login()
+            if logged_in:
+                await self.update_status(retry_count + 1)
+            else:
+                raise HomeAssistantError
+        else:      
+            self.data = await self.kia_api.get_vehicle_status(self.vehicle_id)
             async_dispatcher_send(self.hass, self.topic_update)
-
-    def get_status(self):
-        if self.data:
-            return None
-        else:
-            return self.data
-
 
     def get_child_value(self, key):
         value = self.data
@@ -66,7 +66,7 @@ class KiaConnectVehicle:
     
     @property
     def model(self):
-        return self.info["model"]
+        return self._model
 
     @property
     def name(self):
@@ -74,12 +74,12 @@ class KiaConnectVehicle:
 
     @property
     def vin(self):
-        return self.info["vin"]
+        return self._vin
 
     @property
     def license_plate(self):
-        return self.info["licensePlate"]
+        return self._license_plate
 
     @property
     def propulsion(self):
-        return self.info["fuel"]
+        return self._propulsion

@@ -29,7 +29,14 @@ class KiaConnectEntity(Entity):
 
     @property
     def available(self) -> bool:
-        return not not self.vehicle
+        if not self.vehicle:
+            return False
+        elif not self.vehicle.info:
+            return False
+        elif not self.vehicle.data:
+            return False
+        else:
+            return True
 
     @property
     def should_poll(self) -> bool:
