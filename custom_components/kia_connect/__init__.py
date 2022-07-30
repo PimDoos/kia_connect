@@ -72,7 +72,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        hass.data[DOMAIN].pop(entry.entry_id)
+        if entry.entry_id in hass.data[DOMAIN]:
+            hass.data[DOMAIN].pop(entry.entry_id)
+            
         hass.data[DOMAIN][KIA_CONNECT_VEHICLE] = None
 
         await hass.async_add_executor_job(
