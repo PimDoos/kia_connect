@@ -7,7 +7,7 @@ from homeassistant.const import (
     STATE_OFF,
     STATE_ON
 )
-from homeassistant.components.binary_sensor import DEVICE_CLASS_BATTERY_CHARGING, DEVICE_CLASS_LOCK, DEVICE_CLASS_PLUG, DEVICE_CLASS_PROBLEM, BinarySensorEntity
+from homeassistant.components.binary_sensor import BinarySensorEntity, BinarySensorDeviceClass
 from homeassistant.core import HomeAssistant
 
 from .KiaConnectEntity import KiaConnectEntity
@@ -18,7 +18,7 @@ from .const import DOMAIN, KIA_CONNECT_VEHICLE, PROPULSION_BEV, PROPULSION_PHEV,
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the Kia vehicle sensors"""
 
-    vehicle = hass.data[DOMAIN][KIA_CONNECT_VEHICLE]
+    vehicle = hass.data[DOMAIN][config_entry.entry_id][KIA_CONNECT_VEHICLE]
     VEHICLE_SENSORS = []
 
     if vehicle.propulsion == PROPULSION_BEV or vehicle.propulsion == PROPULSION_PHEV:
@@ -32,7 +32,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "evInfo.isCharging",
                 None,
                 None,
-                DEVICE_CLASS_BATTERY_CHARGING
+                BinarySensorDeviceClass.BATTERY_CHARGING
             )
         )
         VEHICLE_SENSORS.append(
@@ -45,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "evInfo.isPlugged",
                 None,
                 None,
-                DEVICE_CLASS_PLUG
+                BinarySensorDeviceClass.PLUG
             )
         )
     #elif vehicle.propulsion == PROPULSION_ICE:
@@ -61,7 +61,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             "doorsLocked",
             "mdi:car-door",
             "mdi:car-door-lock",
-            DEVICE_CLASS_LOCK,
+            BinarySensorDeviceClass.LOCK,
             True
         )
     )
@@ -90,7 +90,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "tireWarnings.{}".format(tire["key"]),
                 "mdi:car-tire-alert",
                 "mdi:tire",
-                DEVICE_CLASS_PROBLEM
+                BinarySensorDeviceClass.PROBLEM
             )
         )
 

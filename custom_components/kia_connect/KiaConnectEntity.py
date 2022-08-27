@@ -1,4 +1,5 @@
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 
@@ -7,7 +8,7 @@ from .const import DEVICE_MANUFACTURER, DOMAIN, KIA_CONNECT_VEHICLE, TOPIC_UPDAT
 
 
 class KiaConnectEntity(Entity):
-    def __init__(self, hass: HomeAssistant, config_entry, vehicle: KiaConnectVehicle):
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, vehicle: KiaConnectVehicle):
         self.hass = hass
         self.config_entry = config_entry
         self.vehicle = vehicle
@@ -53,4 +54,4 @@ class KiaConnectEntity(Entity):
         }
     @callback
     def update_from_latest_data(self):
-        self.vehicle = self.hass.data[DOMAIN][KIA_CONNECT_VEHICLE]
+        self.vehicle = self.hass.data[DOMAIN][self.config_entry.entry_id][KIA_CONNECT_VEHICLE]

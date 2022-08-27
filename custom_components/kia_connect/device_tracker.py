@@ -1,5 +1,6 @@
 """Sensor to read vehicle data from Kia Connected Services"""
 from __future__ import annotations
+from distutils.command.config import config
 from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.core import HomeAssistant
@@ -15,7 +16,7 @@ from .const import DOMAIN, KIA_CONNECT_VEHICLE
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """Set up the Kia vehicle sensors"""
 
-    vehicle = hass.data[DOMAIN][KIA_CONNECT_VEHICLE]
+    vehicle = hass.data[DOMAIN][config_entry.entry_id][KIA_CONNECT_VEHICLE]
     tracker = VehicleTracker(hass, config_entry, vehicle)
     async_add_entities([tracker])
     
