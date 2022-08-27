@@ -4,13 +4,11 @@ from homeassistant.config_entries import ConfigEntry
 
 
 from homeassistant.const import (
-    DEVICE_CLASS_PRESSURE,
     PERCENTAGE,
-    DEVICE_CLASS_BATTERY,
     PRESSURE_BAR,
     TIME_MINUTES
 )
-from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, STATE_CLASS_TOTAL, STATE_CLASS_TOTAL_INCREASING, SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
 from homeassistant.core import HomeAssistant
 
 from .KiaConnectEntity import KiaConnectEntity
@@ -21,7 +19,7 @@ from .const import DISTANCE_UNITS, DOMAIN, DRIVING_STYLES, KIA_CONNECT_VEHICLE, 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the Kia vehicle sensors"""
 
-    vehicle = hass.data[DOMAIN][KIA_CONNECT_VEHICLE]
+    vehicle = hass.data[DOMAIN][config_entry.entry_id][KIA_CONNECT_VEHICLE]
     VEHICLE_SENSORS = []
 
     if vehicle.propulsion == PROPULSION_BEV or vehicle.propulsion == PROPULSION_PHEV:
@@ -35,8 +33,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "evInfo.chargeLevel",
                 PERCENTAGE,
                 None,
-                DEVICE_CLASS_BATTERY,
-                STATE_CLASS_MEASUREMENT
+                SensorDeviceClass.BATTERY,
+                SensorStateClass.MEASUREMENT
             )
         )
         VEHICLE_SENSORS.append(
@@ -49,8 +47,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "evInfo.timeUntilCharged",
                 TIME_MINUTES,
                 "mdi:battery-clock",
-                None,
-                STATE_CLASS_MEASUREMENT
+                SensorDeviceClass.DURATION,
+                SensorStateClass.MEASUREMENT
             )
         )
     
@@ -68,7 +66,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             DISTANCE_UNITS,
             "mdi:gauge",
             None,
-            STATE_CLASS_TOTAL
+            SensorStateClass.TOTAL
         )
     )
     
@@ -83,7 +81,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             DISTANCE_UNITS,
             "mdi:gauge",
             None,
-            STATE_CLASS_MEASUREMENT
+            SensorStateClass.MEASUREMENT
         )
     )
 
@@ -99,7 +97,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 PERCENTAGE,
                 "mdi:steering",
                 None,
-                STATE_CLASS_MEASUREMENT
+                SensorStateClass.MEASUREMENT
             )
         )
     
@@ -114,8 +112,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "tirePressures.{}".format(tire["key"]),
                 PRESSURE_BAR,
                 "mdi:tire",
-                DEVICE_CLASS_PRESSURE,
-                STATE_CLASS_MEASUREMENT
+                SensorDeviceClass.PRESSURE,
+                SensorStateClass.MEASUREMENT
             )
         )
     async_add_entities(VEHICLE_SENSORS)
