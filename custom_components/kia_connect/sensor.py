@@ -65,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             "odoMeter",
             DISTANCE_UNITS,
             "mdi:gauge",
-            None,
+            SensorDeviceClass.DISTANCE,
             SensorStateClass.TOTAL
         )
     )
@@ -80,7 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             "range",
             DISTANCE_UNITS,
             "mdi:gauge",
-            None,
+            SensorDeviceClass.DISTANCE,
             SensorStateClass.MEASUREMENT
         )
     )
