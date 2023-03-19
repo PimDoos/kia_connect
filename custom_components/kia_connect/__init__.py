@@ -74,7 +74,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        await hass.data[DOMAIN][entry.entry_id][KIA_CONNECT_API].logout()
+        entry_data = hass.data[DOMAIN][entry.entry_id]
+        await entry_data[KIA_CONNECT_API].logout()
+
+        if DATA_VEHICLE_LISTENER in entry_data:
+            entry_data[DATA_VEHICLE_LISTENER]()
 
         hass.data[DOMAIN][entry.entry_id][KIA_CONNECT_VEHICLE] = None
         hass.data[DOMAIN][entry.entry_id][KIA_CONNECT_API] = None
