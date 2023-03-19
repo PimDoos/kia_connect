@@ -105,20 +105,19 @@ class VehicleSensor(KiaConnectEntity, BinarySensorEntity):
         config_entry,
         vehicle: KiaConnectVehicle,
         id,
-        description,
+        name,
         key,
         icon_on,
         icon_off,
         device_class,
         invert = False
     ):
-        super().__init__(hass, config_entry, vehicle)
+        super().__init__(hass, config_entry, vehicle, name)
         self._id = id
-        self._description = description
         self._key = key
         self._icon_on = icon_on
         self._icon_off = icon_off
-        self._device_class = device_class
+        self._attr_device_class = device_class
         self.vehicle = vehicle
         self._invert = invert
 
@@ -147,14 +146,6 @@ class VehicleSensor(KiaConnectEntity, BinarySensorEntity):
             return self._icon_on
         else:
             return self._icon_off
-
-    @property
-    def device_class(self):
-        return self._device_class
-
-    @property
-    def name(self):
-        return f"{self.vehicle.name} {self._description}"
 
     @property
     def unique_id(self):

@@ -127,22 +127,23 @@ class VehicleSensor(KiaConnectEntity, SensorEntity):
         config_entry,
         vehicle: KiaConnectVehicle,
         id,
-        description,
+        name,
         key,
         unit,
         icon,
-        device_class,
-        state_class,
+        device_class: SensorDeviceClass,
+        state_class: SensorStateClass,
     ):
-        super().__init__(hass, config_entry, vehicle)
+        super().__init__(hass, config_entry, vehicle, name)
         self._id = id
-        self._description = description
+
         self._key = key
-        self._unit = unit
-        self._icon = icon
-        self._device_class = device_class
-        self._state_class = state_class
         self.vehicle = vehicle
+
+        self._attr_native_unit_of_measurement = unit
+        self._attr_icon = icon
+        self._attr_device_class = device_class
+        self._attr_state_class = state_class
 
     @property
     def state(self):
@@ -151,26 +152,6 @@ class VehicleSensor(KiaConnectEntity, SensorEntity):
     @property
     def available(self) -> bool:
         return self.vehicle.get_child_value(self._key) is not None
-
-    @property
-    def unit_of_measurement(self):
-        return self._unit
-
-    @property
-    def icon(self):
-        return self._icon
-
-    @property
-    def device_class(self):
-        return self._device_class
-
-    @property
-    def state_class(self):
-        return self._state_class
-
-    @property
-    def name(self):
-        return f"{self.vehicle.name} {self._description}"
 
     @property
     def unique_id(self):
