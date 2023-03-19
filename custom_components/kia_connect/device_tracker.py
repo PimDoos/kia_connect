@@ -29,9 +29,9 @@ class VehicleTracker(KiaConnectEntity, TrackerEntity):
         config_entry,
         vehicle: KiaConnectVehicle,
     ):
-        super().__init__(hass, config_entry, vehicle)
+        super().__init__(hass, config_entry, vehicle, "Location")
         self.vehicle = vehicle
-        self._icon = "mdi:map-marker"
+        self._attr_icon = "mdi:map-marker"
         self._source_type = SOURCE_TYPE_GPS
 
     @property
@@ -42,18 +42,9 @@ class VehicleTracker(KiaConnectEntity, TrackerEntity):
     def longitude(self):
         return self.vehicle.get_child_value("position.longitude")
 
-
-    @property
-    def icon(self):
-        return self._icon
-
     @property
     def source_type(self):
         return self._source_type
-
-    @property
-    def name(self):
-        return f"{self.vehicle.name} Location"
 
     @property
     def unique_id(self):
