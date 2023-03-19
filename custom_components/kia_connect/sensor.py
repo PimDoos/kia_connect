@@ -146,7 +146,7 @@ class VehicleSensor(KiaConnectEntity, SensorEntity):
         self._attr_state_class = state_class
 
     @property
-    def state(self):
+    def native_value(self):
         return self.vehicle.get_child_value(self._key)
 
     @property
