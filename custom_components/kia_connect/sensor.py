@@ -4,11 +4,10 @@ from homeassistant.config_entries import ConfigEntry
 
 
 from homeassistant.const import (
-    PERCENTAGE,
-    PRESSURE_BAR,
-    TIME_MINUTES
+    PERCENTAGE
 )
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
+from homeassistant.components.sensor.const import UnitOfPressure, UnitOfTime
 from homeassistant.core import HomeAssistant
 
 from .KiaConnectEntity import KiaConnectEntity
@@ -19,11 +18,11 @@ from .const import DISTANCE_UNITS, DOMAIN, DRIVING_STYLES, KIA_CONNECT_VEHICLE, 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the Kia vehicle sensors"""
 
-    vehicle = hass.data[DOMAIN][config_entry.entry_id][KIA_CONNECT_VEHICLE]
-    VEHICLE_SENSORS = []
+    vehicle: KiaConnectVehicle = hass.data[DOMAIN][config_entry.entry_id][KIA_CONNECT_VEHICLE]
+    sensors = []
 
     if vehicle.propulsion == PROPULSION_BEV or vehicle.propulsion == PROPULSION_PHEV:
-        VEHICLE_SENSORS.append(
+        sensors.append(
             VehicleSensor(
                 hass,
                 config_entry,
@@ -37,7 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 SensorStateClass.MEASUREMENT
             )
         )
-        VEHICLE_SENSORS.append(
+        sensors.append(
             VehicleSensor(
                 hass,
                 config_entry,
@@ -45,7 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "ev_charge_time_remaining",
                 "EV Charge Time Remaining",
                 "evInfo.timeUntilCharged",
-                TIME_MINUTES,
+                UnitOfTime.MINUTES,
                 "mdi:battery-clock",
                 SensorDeviceClass.DURATION,
                 SensorStateClass.MEASUREMENT
@@ -55,7 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     #elif vehicle.propulsion == PROPULSION_ICE:
         #TODO Add combustion engine sensors
 
-    VEHICLE_SENSORS.append(
+    sensors.append(
         VehicleSensor(
             hass,
             config_entry,
@@ -70,7 +69,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         )
     )
     
-    VEHICLE_SENSORS.append(
+    sensors.append(
         VehicleSensor(
             hass,
             config_entry,
@@ -86,7 +85,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     )
 
     for driving_style in DRIVING_STYLES:
-        VEHICLE_SENSORS.append(
+        sensors.append(
             VehicleSensor(
                 hass,
                 config_entry,
@@ -102,7 +101,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         )
     
     for tire in VEHICLE_TIRES:
-        VEHICLE_SENSORS.append(
+        sensors.append(
             VehicleSensor(
                 hass,
                 config_entry,
@@ -110,13 +109,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "tire_pressure_{}".format(tire["key"]),
                 "Tire Pressure {}".format(tire["name"]),
                 "tirePressures.{}".format(tire["key"]),
-                PRESSURE_BAR,
+                UnitOfPressure.BAR,
                 "mdi:tire",
                 SensorDeviceClass.PRESSURE,
                 SensorStateClass.MEASUREMENT
             )
         )
-    async_add_entities(VEHICLE_SENSORS)
+    async_add_entities(sensors)
     
 
 
