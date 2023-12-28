@@ -9,6 +9,7 @@ from homeassistant.const import (
     TIME_MINUTES
 )
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass, SensorStateClass
+from homeassistant.components.sensor.const import UnitOfPressure, UnitOfTime
 from homeassistant.core import HomeAssistant
 
 from .KiaConnectEntity import KiaConnectEntity
@@ -45,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "ev_charge_time_remaining",
                 "EV Charge Time Remaining",
                 "evInfo.timeUntilCharged",
-                TIME_MINUTES,
+                UnitOfTime.MINUTES,
                 "mdi:battery-clock",
                 SensorDeviceClass.DURATION,
                 SensorStateClass.MEASUREMENT
@@ -110,7 +111,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 "tire_pressure_{}".format(tire["key"]),
                 "Tire Pressure {}".format(tire["name"]),
                 "tirePressures.{}".format(tire["key"]),
-                PRESSURE_BAR,
+                UnitOfPressure.BAR,
                 "mdi:tire",
                 SensorDeviceClass.PRESSURE,
                 SensorStateClass.MEASUREMENT

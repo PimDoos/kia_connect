@@ -1,5 +1,5 @@
 """Constants for the Kia Connected Services integration."""
-from homeassistant.const import LENGTH_KILOMETERS
+from homeassistant.components.sensor.const import UnitOfLength
 
 # Configuration
 DOMAIN = "kia_connect"
@@ -39,7 +39,7 @@ VEHICLE_TIRES = [
 	{"key": "rearRight", "name":"Rear Right"},
 ]
 
-DISTANCE_UNITS = LENGTH_KILOMETERS
+DISTANCE_UNITS = UnitOfLength.KILOMETERS
 
 KIA_CONNECT_API = "kia_connect_api"
 KIA_CONNECT_VEHICLE = "kia_connect_vehicle"
