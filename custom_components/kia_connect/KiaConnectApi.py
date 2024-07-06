@@ -26,60 +26,79 @@ class KiaConnectApi:
         self.user = {}
         self.vehicle = {}
         self.session = aiohttp.ClientSession()
+    
+    async def post(self, path, json):
+        url = self.api_base_uri + path
+        async with self.session.post(url, json=json) as response:
+            if(response.status == 200):
+                try:
+                    api_response = await response.json()
+                    if api_response["isSuccess"]:
+                        return api_response
+                    else:
+                        return None
+                except:
+                    return None
+            else:
+                return None
+            
+    async def get(self, path):
+        url = self.api_base_uri + path
+        async with self.session.get(url) as response:
+            if(response.status == 200):
+                try:
+                    api_response = await response.json()
+                    if api_response["isSuccess"]:
+                        return api_response
+                    else:
+                        return None
+                except:
+                    return None
+            else:
+                return None
 
     async def login(self) -> bool:
         """Authenticates the API session using the credentials specified in the constructor"""
 
-        payload = {
+        credentials = {
             "username": self.username,
             "password": self.password
         }
-        url = self.api_base_uri + API_PATH_USER_LOGIN
-        async with self.session.post(url, json=payload) as response:
-            if(response.status == 200):
-                api_response = await response.json()
-                if api_response["isSuccess"]:
-                    self.user = await self.get_user()
-                    return True
-                else:
-                    return False
-            else:
+        response = await self.post(API_PATH_USER_LOGIN, credentials)
+        if response != None:
+            try:
+                self.user = await self.get_user()
+                return True
+            except:
                 return False
+        else:
+            return False
 
     async def logout(self) -> bool:
         """Deauthenticates the API session"""
-        url = self.api_base_uri + API_PATH_USER_LOGOUT
-        async with self.session.get(url) as response:
-            if(response.status == 200):
-                api_response = await response.json()
-                if api_response["isSuccess"]:
-                    return True
-                else:
-                    return False
-            else:
-                return False
+        response = await self.post(API_PATH_USER_LOGOUT)
+        return response != None
 
     async def is_logged_in(self) -> bool:
         """Checks whether the session is currently authenticated"""
-        url = self.api_base_uri + API_PATH_USER_LOGGED_IN
-        async with self.session.get(url) as response:
-            if(response.status == 200):
-                api_response = await response.json()
-                return api_response["isSuccess"]
-            else:
-                return False
+        response = await self.get(API_PATH_USER_LOGGED_IN)
+        return response != None
 
     async def get_user(self):
         """Get the currently logged in user"""
-        url = self.api_base_uri + API_PATH_USER
-        async with self.session.get(url) as response:
-            if response.status == 200:
-                api_response = await response.json()
-                if api_response["isSuccess"]:
-                    user = api_response["data"]
-                return user
-            else:
-                return None
+        response: dict = await self.get(API_PATH_USER)
+        if response != None:
+            return response.get("data", None)
+        else:
+            return None
+    
+    async def get_vehicle_status(self, vehicle_id: int):
+        """Get the vehicle status"""
+        response: dict = await self.get(API_PATH_VEHICLE_STATUS.format(id=vehicle_id))
+        if response != None:
+            return response.get("data", None)
+        else:
+            return None
 
     async def get_vehicle_ids(self):
         """Get a list of vehicle IDs associated with the logged in user"""
@@ -107,18 +126,3 @@ class KiaConnectApi:
         else:
             return None
 
-
-    async def get_vehicle_status(self, vehicle_id: int):
-        """Get the vehicle status"""
-        url = self.api_base_uri + API_PATH_VEHICLE_STATUS.format(id=vehicle_id)
-        async with self.session.get(url) as response:
-            if response.status == 200:
-                api_response = await response.json()
-                if api_response["isSuccess"]:
-                    
-                    vehicle = api_response["data"]
-                    return vehicle
-                else:
-                    return None
-            else:
-                return None
