@@ -63,10 +63,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     await update(dt_util.utcnow())
     hass.data[DOMAIN][config_entry.entry_id][DATA_VEHICLE_LISTENER] = async_track_time_interval(hass, update, scan_interval)
 
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, platform)
-        )
+    await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
     return True
 
