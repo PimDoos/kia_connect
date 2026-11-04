@@ -1,45 +1,45 @@
-# MijnKia / Kia Connected Services
+# MijnKia
+
 This custom component integrates MijnKia (Connected Car Services) into Home Assistant.
 
-This implementation is specific to the non-UVO Kia Connected Services implementation for cars built before 2021.
-Newer cars mostly use the Kia UVO implementation. See [fuatakgun/kia_uvo](https://github.com/fuatakgun/kia_uvo/) to integrate with those.
+## Choose the right integration
 
-Setup with HACS
----------------
+This implementation is specific to Dutch Kia cars built before 2021, connected to the [MijnKia app](https://play.google.com/store/apps/details?id=com.redhotminute.kia.mijnkia).
+
+If your car works with the modern [Kia App](https://play.google.com/store/apps/details?id=com.kia.oneapp.eu), please use the [kia_uvo](https://github.com/Hyundai-Kia-Connect/kia_uvo) integration.
+
+## Setup
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 
-This repository is available in the HACS default repository.
+This repository is available in the Home Assistant Marketplace.
 
-
-Manual Setup
-------------
-Copy the kia_connect folder to your custom_integrations folder.
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=PimDoos&repository=kia_connect&category=plugin)
 
 After installing, you can set the integration up from the UI:
 
 ![image](https://user-images.githubusercontent.com/17709721/163856070-88a2a764-ab1d-4ece-a8d2-d46161cbe9f5.png)
 
+### Manual setup
 
-Tested cars
------------
+Copy the kia_connect folder to your custom_integrations folder.
+
+
+
+## Tested cars
+
 | Model | Type |
 |-------|------|
-| Kia e-Niro | EV |
+| Kia e-Niro MY19 | EV |
 
-Supported regions
------------------
+## Supported regions
+
 These regions are currently supported. 
 
 | Region | MyKia URL |
 |--------|-----------|
 | Netherlands (NL) | https://mijnkia.nl |
 
-Want your region added? Log in to your MyKia account and open an issue with the following information:
-- Base URL, e.g. `https://mijnkia.nl`
-- A json response for the `/api/user` call
-- A json response for the `/api/vehicles/{preferred_vehicle}/connected-status` call
-
-Please anonymize these json values before submitting.
 
 
 Screenshots
